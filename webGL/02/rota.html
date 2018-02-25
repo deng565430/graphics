@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>绘制点</title>
+</head>
+
+<body>
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script src="./lib.js"></script>
+<script>
+var can = document.getElementById('can');
+var gl = can.getContext('webgl');
+
+// 顶点着色器
+var VERTEX_SHADER = `
+  attribute vec4 a_pos;
+  uniform float u_sinB,u_cosB;
+  void main(){
+    gl_Position.x=a_pos.x*u_cosB-a_pos.y*u_sinB;
+    gl_Position.y=a_pos.x*u_sinB+a_pos.y*u_cosB;
+    gl_Position.z=a_pos.z;
+    gl_Position.w=a_pos.w;
+  }`;
+// 片源着色器
+var FRAG_SHADER = `
+    void main(){
+      gl_FragColor=vec4(0.1, 1.0, 1.0, 1.0);
+    }
+  `
+// 初始化着色器
+var program = initShader(gl, VERTEX_SHADER, FRAG_SHADER)
+
+// 准备好顶点信息
+var dataVertices = new Float32Array([
+  0.0, 0.0,
+  0.3, 0.3,
+  0.6, 0.0
+])
+
+// 缓冲区对象
+bufferInit(gl, dataVertices, 'a_pos', program);
+
+var angle = 0.0;
+
+window.onkeydown = function(e) {
+  // 上
+  if (40 == e.keyCode) {
+    angle -= 1.0;
+  }
+  // 上
+  if (38 == e.keyCode) {
+    angle += 1.0;
+  }
+  console.log(angle)
+  run();
+}
+
+var u_sinB = gl.getUniformLocation(program, 'u_sinB');
+var u_cosB = gl.getUniformLocation(program, 'u_cosB');
+function run() {
+  var sinB = Math.sin(angle / 180.0 * Math.PI);
+  var cosB = Math.cos(angle / 180 * Math.PI);
+
+  // 赋值
+  gl.uniform1f(u_sinB, sinB);
+  gl.uniform1f(u_cosB, cosB);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+}
+run()
+</script>
+
+</html>

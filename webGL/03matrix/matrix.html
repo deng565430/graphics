@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>缩放</title>
+</head>
+<body>
+  <canvas id="can" width="500" height="500">
+
+  </canvas>
+</body>
+<script src="lib.js"></script>
+<script src="matrix.js"></script>
+<script>
+  var can = document.getElementById('can');
+  var gl = can.getContext('webgl');
+
+  var VERTEX_SHADER=`
+    attribute vec4 a_pos;
+    uniform mat4 u_translate;
+    uniform mat4 u_rotate;
+    void main(){
+      gl_Position=u_rotate*u_translate*a_pos;
+    }
+  `
+
+  var FRAG_SHADER = `
+    void main(){
+      gl_FragColor=vec4(1.0,0.0,0.0,1.0);
+    }
+  `
+
+  var program = initShader(gl, VERTEX_SHADER, FRAG_SHADER);
+
+  var dataVer = new Float32Array([
+      0.0,0.0,
+      0.3,0.3,
+      0.6,0.0
+  ])
+
+  bufferInit(gl, dataVer, 'a_pos', program);
+
+  var u_translate = gl.getUniformLocation(program, 'u_translate');
+  var u_rotate = gl.getUniformLocation(program, 'u_rotate');
+
+  gl.uniformMatrix4fv(u_translate, false, translate(0.4, 0.0, 0.0));
+  gl.uniformMatrix4fv(u_rotate, false, rotate(30.0));
+
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+</script>
+</html>
