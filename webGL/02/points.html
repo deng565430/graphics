@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>绘制点</title>
+</head>
+
+<body>
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script src="./lib.js"></script>
+<script>
+  var can = document.getElementById('can');
+  var gl = can.getContext('webgl');
+
+  // 顶点着色器
+  var VERTEX_SHADER = `
+  attribute vec4 a_pos;
+  void main(){
+    gl_Position=a_pos;
+    gl_PointSize=15.0;
+  }`;
+  // 片源着色器
+  var FRAG_SHADER = `
+    void main(){
+      gl_FragColor=vec4(0.0, 1.0, 1.0, 1.0);
+    }
+  `
+  // 初始化着色器
+  var program = initShader(gl, VERTEX_SHADER, FRAG_SHADER)
+
+  // 准备好顶点信息
+  var dataVertices = new Float32Array([
+    0.0, 0.0,
+    0.6, 0.0,
+    0.3, 0.3,
+    -0.3, 0.3,
+    -0.6, 0.0,
+    -0.3, -0.3,
+    0.3, -0.3,
+    0.6, 0.0,
+  ])
+
+  // 缓冲区对象
+  bufferInit(gl, dataVertices, 'a_pos', program);
+
+
+  // 绘制
+  // 线
+  // gl.drawArrays(gl.LINES, 0, 2)
+  // 线段带
+  // gl.drawArrays(gl.LINE_STRIP, 0, 3)
+  // 回路
+  // gl.drawArrays(gl.LINE_LOOP, 0, 3)
+  // 填充
+  // gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+  // 四边形
+  // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+
+  // 三角扇
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, 8)
+</script>
+
+</html>

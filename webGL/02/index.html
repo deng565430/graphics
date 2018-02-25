@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>绘制点</title>
+</head>
+
+<body>
+  <canvas id="can"></canvas>
+</body>
+<script src="./lib.js"></script>
+<script>
+  var can = document.getElementById('can');
+  var ctx = can.getContext('2d');
+
+  // 常亮区域
+  const VIEW_WIDTH = 1000
+  const VIEW_HEIGHT = 500
+  const G = 9.8;
+  const t = 50 / 1000;
+  const initx = VIEW_WIDTH / 2;
+
+  can.width = VIEW_WIDTH;
+  can.height = VIEW_HEIGHT;
+
+  // 初始化一些数学变量
+  const init = () => {
+    // 返回所有带有物理和数学小球的map
+    let dataMap = new Map();
+    for (let i = 0; i < 10; i++) {
+      // 自带的数学信息
+      const p = {};
+      // 水平方向默认的位移
+      p.initx = VIEW_WIDTH / 2;
+      // 垂直方向默认的位移
+      p.inity = 200;
+      // 当前p的x坐标
+      p.x = VIEW_WIDTH / 2;
+      // 当前p的y坐标
+      p.y = 200;
+      // 初始化时间
+      p.tx = 0;
+      p.ty = 0;
+      // 合速度
+      p.v0 = Math.round(Math.random() * 10);
+      // 角度
+      p.angle = Math.round(Math.random() * 360);
+
+      // 水平方向的速度
+      p.vx = p.v0 * Math.cos(p.angle / 180 * Math.PI);
+      // 垂直方向的速度
+      p.vy = p.v0 * Math.sin(p.angle / 180 * Math.PI);
+      // 垂直方向的实时速度
+      p.vychange = p.vy;
+      dataMap.set(`fly${i}`, p)
+    }
+    return dataMap
+  }
+
+  // 拿到全部的运动对象
+  const dataMap = init()
+
+
+  const draw = (a, b) => {
+    ctx.fillStyle = '#8BC34A';
+    ctx.beginPath();
+    ctx.arc(a, b, 1, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // 使小球运动起来
+  const redraw = (fly) => {
+    // 模拟一个物体运动周期
+    fly.tx += t;
+    fly.ty += t;
+    fly.x = fly.initx + fly.vx * fly.tx;
+    // x的坐标
+    // fly.x = fly.x + fly.vx
+    fly.y = fly.inity + (fly.vy * fly.ty + 1/2 * G * fly.ty)
+    fly.vychange = fly.vy + G * fly.ty;
+    if (fly.x > VIEW_WIDTH || fly.y > VIEW_HEIGHT) {
+      // 重新去做运动。时间归零
+      fly.ty = 0;
+      fly.y = VIEW_HEIGHT;
+      fly.vy = -0.75 * fly.vychange;
+      fly.inity = fly.y;
+      draw(fly.x, fly.y);
+    } else {
+      // 清除掉setInterval
+      draw(fly.x, fly.y);
+    }
+  }
+  setInterval(() => {
+    for(let i = 0; i < 10; i++) {
+      redraw(dataMap.get(`fly${i}`))
+    }
+  }, 50)
+
+
+</script>
+
+</html>

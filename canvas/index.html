@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <img src="1.jpg" alt="" id="img">
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script>
+  var img = document.getElementById('img');
+  var canvas = document.getElementById('can');
+  var ctx = canvas.getContext('2d');
+  // ctx.moveTo(100, 100);
+  // ctx.lineTo(300, 300);
+  // ctx.lineTo(100, 200);
+  // ctx.stroke();
+
+
+  // ctx.fileStyle = '#000';
+  // // 圆
+  // ctx.beginPath();
+  // ctx.arc(200, 200, 100, 0*Math.PI, 2*Math.PI, true);
+  // ctx.closePath();
+  // // 绘制
+  // ctx.stroke();
+  // // 填充
+  // ctx.fill();
+
+
+  // 创建一个矩形渐变
+  // var grd = ctx.createLinearGradient(0, 0, 500, 500);
+  // // 渐变填充颜色
+  // grd.addColorStop(0, 'red');
+  // grd.addColorStop(0.5, 'blue');
+  // grd.addColorStop(1, 'yellow');
+
+  // ctx.fillStyle = grd;
+  // ctx.fillRect(0, 0, 500, 500);
+
+
+  // 空心字
+  // ctx.font = '30px Arial';
+  // // 实心字
+  // ctx.fillText('yideng', 10, 50);
+  // // 空心字
+  // ctx.strokeText('xuetang', 10, 200);
+
+
+  // 图片
+  img.onload = function (params) {
+    ctx.drawImage(img, 10, 10)
+  }
+</script>
+</html>

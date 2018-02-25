@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>绘制点</title>
+</head>
+
+<body>
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script src="./lib.js"></script>
+<script>
+  var can = document.getElementById('can');
+  var gl = can.getContext('webgl');
+
+  // 顶点着色器
+  var VERTEX_SHADER = `
+  attribute vec4 a_pos;
+  uniform vec4 u_change;
+  void main(){
+    gl_Position=a_pos+u_change;
+  }`;
+  // 片源着色器
+  var FRAG_SHADER = `
+    void main(){
+      gl_FragColor=vec4(1.0, 0.5, 0.8, 1.0);
+    }
+  `
+  // 初始化着色器
+  var program = initShader(gl, VERTEX_SHADER, FRAG_SHADER)
+
+  // 准备好顶点信息
+  var dataVertices = new Float32Array([
+    0.0, 0.0,
+    0.5, 0.5,
+    0.3, 0.0
+  ])
+
+  // 缓冲区对象
+  bufferInit(gl, dataVertices, 'a_pos', program);
+
+  var u_change = gl.getUniformLocation(program, 'u_change');
+
+  var x = 0.0;
+  var y = 0.0;
+
+  window.onkeydown = function (e) {
+    // 左
+    if (37 == e.keyCode) {
+      x -= 0.01;
+    }
+    // 右
+    if (39 == e.keyCode) {
+      x += 0.01;
+    }
+    // 上
+    if (40 == e.keyCode) {
+      y -= 0.01;
+    }
+    // 下
+    if (38 == e.keyCode) {
+      y += 0.01;
+    }
+    console.log(x,y)
+    run();
+  }
+  function run() {
+    // 赋值
+    gl.uniform4f(u_change, x, y, 0.0, 0.0);
+    // 清屏操作
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+  }
+  run()
+
+</script>
+
+</html>

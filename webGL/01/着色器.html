@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>绘制一个点</title>
+</head>
+<body>
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script>
+  var can = document.getElementById('can');
+  var gl = can.getContext('webgl');
+
+  // 顶点着色器
+  var VERTEX_SHADER = `void main(){
+    gl_Position=vec4(0.0, 0.0, 1.0, 1.0);
+    gl_PointSize=10.0;
+  }`;
+  // 片源着色器
+  var FRAG_SHADER=`
+    void main(){
+      gl_FragColor=vec4(1.0, 0.0, 0.0, 1.0);
+    }
+  `
+  // 创建顶点着色器
+  var vertex = gl.createShader(gl.VERTEX_SHADER);
+  // 创建片源着色器
+  var frag = gl.createShader(gl.FRAGMENT_SHADER);
+
+  // 指定着色器对象
+  gl.shaderSource(vertex, VERTEX_SHADER);
+  gl.shaderSource(frag, FRAG_SHADER);
+
+  gl.compileShader(vertex);
+  gl.compileShader(frag);
+
+  // 创建对象
+  var program = gl.createProgram();
+  // 分配着色器对象
+  gl.attachShader(program, vertex);
+  gl.attachShader(program, frag);
+
+  // 链接对象
+  gl.linkProgram(program);
+
+  // 告知使用对象
+  gl.useProgram(program);
+
+  // 清屏
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // 绘制
+  gl.drawArrays(gl.POINTS, 0, 1);
+</script>
+</html>

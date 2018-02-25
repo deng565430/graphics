@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>缓冲区</title>
+</head>
+<body>
+  <canvas id="can" height="500" width="500"></canvas>
+</body>
+<script src="./lib.js"></script>
+<script>
+  var can = document.getElementById('can');
+  var gl = can.getContext('webgl');
+
+  // 顶点着色器
+  var VERTEX_SHADER = `
+  attribute vec4 a_pos;
+  void main(){
+    gl_Position=a_pos;
+    gl_PointSize=15.0;
+  }`;
+    // 片源着色器
+  var FRAG_SHADER = `
+    void main(){
+      gl_FragColor=vec4(1.0, 1.0, 0.0, 1.0);
+    }
+  `
+  // 初始化着色器
+  var program = initShader(gl, VERTEX_SHADER, FRAG_SHADER)
+
+  // 准备好顶点信息
+  var dataVertices = new Float32Array([
+    0.0, 0.0,
+    0.5, 0.5,
+    0.5, -0.5,
+    -0.5, -0.5,
+    -0.5, 0.5
+  ])
+
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  // 缓冲区对象写入数据
+  gl.bufferData(gl.ARRAY_BUFFER, dataVertices, gl.STATIC_DRAW);
+
+  var a_pos = gl.getAttribLocation(program, 'a_pos');
+
+  // 将缓冲区分配给a_pos对象
+  gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+
+  // 开启attr对象
+  gl.enableVertexAttribArray(a_pos);
+
+  // 绘制
+  gl.drawArrays(gl.POINTS, 0, 5)
+</script>
+</html>
